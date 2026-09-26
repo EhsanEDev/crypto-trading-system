@@ -28,3 +28,6 @@ modules/research/data/metadata/**/*.json
 
 # OS
 .DS_Store
+
+# IDE
+.idea/
