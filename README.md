@@ -8,7 +8,7 @@ independent modules.
 
 ```text
 Module 1 — Research:                 implemented ✅
-Module 2 — Strategy + Backtester:    planned ⏳
+Module 2 — Strategy + Backtester:    implemented ✅
 Module 3 — Paper Trading:            planned ⏳
 Module 4 — Infrastructure (Supabase): planned ⏳
 Module 5 — Telegram:                 planned ⏳

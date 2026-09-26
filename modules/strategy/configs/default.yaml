@@ -1,0 +1,54 @@
+# Strategy v001 default configuration (all thresholds externalized).
+
+strategy:
+  name: trend_pullback_momentum
+  version: v001
+
+assets:
+  - BTCUSDT
+  - ETHUSDT
+  - SOLUSDT
+
+timeframes:
+  regime: 4h
+  entry: 1h
+
+market: futures
+
+# research outputs root (the data-contract boundary)
+research_data_dir: ../research/data
+
+entry:
+  rsi_recovery_threshold: 50
+  require_close_above_ema20: true
+
+# 1H indicator periods (computed locally by the strategy module)
+ema20_period: 20
+rsi_period: 14
+atr_period: 14
+
+volatility:
+  enabled: true
+  percentile: 90
+  lookback: 200
+
+risk:
+  risk_per_trade: 0.005
+  atr_stop_multiplier: 1.5
+  reward_ratio: 2.0
+
+portfolio:
+  max_open_positions: 3
+  max_total_exposure: 1.0
+  one_position_per_symbol: true
+
+execution:
+  fee_rate: 0.0006
+  slippage_bps: 5
+
+exits:
+  regime_exit: true
+  ema_exit: false
+
+backtest:
+  initial_equity: 10000

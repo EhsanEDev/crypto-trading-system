@@ -25,7 +25,7 @@ Regime Detector v001 (rule-based hypothesis, no lookahead).
 - Raw range: `2022-04-17 16:00:00+00:00` → `2026-09-24 00:00:00+00:00` (9723 candles)
 - Raw content hash: `71f90165711108ec…`
 - Regime config fingerprint: `c2f45dc0350e`
-- Generated at: `2026-09-24T06:13:02.894585+00:00` (code v0.1.0, schema v1.0)
+- Generated at: `2026-09-24T07:54:18.018391+00:00` (code v0.1.0, schema v1.0)
 - Artifact freshness: **fresh**
 
 ## Indicator summary
