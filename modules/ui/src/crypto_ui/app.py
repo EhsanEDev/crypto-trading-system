@@ -103,9 +103,53 @@ window = st.slider(
 
 diff = diff_labels(baseline_frame["regime"], candidate_frame["regime"])
 
-# --------------------------------------------------------------------- #
-# Regimes tab
-# --------------------------------------------------------------------- #
+with tab_compare:
+    from crypto_ui.pages import compare as compare_page
+
+    c1, c2, c3 = st.columns(3)
+    c1.metric(
+        "Changed candles",
+        f"{diff['changed_candles']:,}",
+        f"{diff['changed_pct']:.1f}% of {len(baseline_frame):,}",
+    )
+    c2.metric(
+        "Baseline top regime",
+        max(diff["baseline_distribution"], key=diff["baseline_distribution"].get),
+    )
+    c3.metric(
+        "Candidate top regime",
+        max(diff["candidate_distribution"], key=diff["candidate_distribution"].get),
+    )
+
+    frame = _tail(candidate_frame, window)
+    baseline_labels = baseline_frame["regime"].loc[frame.index]
+    candidate_labels = candidate_frame["regime"].loc[frame.index]
+
+    st.plotly_chart(
+        compare_page.build_strips_figure(frame, baseline_labels, candidate_labels),
+        width="stretch", config={"displaylogo": False},
+    )
+
+    bar1, bar2 = st.columns(2)
+    with bar1:
+        st.plotly_chart(
+            compare_page.distribution_bars(
+                diff["baseline_distribution"], diff["candidate_distribution"]
+            ),
+            width="stretch", config={"displaylogo": False},
+        )
+    with bar2:
+        st.markdown("**Label changes (baseline → candidate)**")
+        if diff["pairs"]:
+            for pair, count in compare_page.transition_rows(diff):
+                st.markdown(f"- `{pair}` — **{count:,}** candles")
+        else:
+            st.caption("No label changes — the candidate config equals the baseline.")
+
+    st.caption(
+        "Both label sets come from the same pure detector the CLI uses "
+        "(no lookahead); overrides are exactly the sidebar sliders."
+    )
 
 with tab_regimes:
     st.markdown("Regime labels over candles — recalibrate thresholds live.")
