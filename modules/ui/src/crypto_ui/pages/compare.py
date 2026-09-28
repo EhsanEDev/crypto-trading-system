@@ -29,8 +29,8 @@ def build_strips_figure(
         go.Candlestick(
             x=frame.index, open=frame["open"], high=frame["high"],
             low=frame["low"], close=frame["close"], name="OHLC",
-            increasing_line_color="#3a3f4b", decreasing_line_color="#3a3f4b",
-            increasing_fillcolor="#3a3f4b", decreasing_fillcolor="#22252e",
+            increasing_line_color="#7c8494", decreasing_line_color="#7c8494",
+            increasing_fillcolor="#4a5060", decreasing_fillcolor="#2a2e38",
         ),
         row=1, col=1,
     )
@@ -51,8 +51,10 @@ def build_strips_figure(
         row=STRIP_ROW["diff"], col=1,
     )
     fig.update_layout(**DARK_LAYOUT, height=620)
-    fig.update_yaxes(visible=False, range=[0, 1.4])
-    fig.update_yaxes(title_text="Price", row=1, col=1, showticklabels=True, visible=True)
+    # scope the label-strip axes to rows 2..4 (never touch the price axis!)
+    for row in (2, 3, 4):
+        fig.update_yaxes(visible=False, range=[0, 1.4], row=row, col=1)
+    fig.update_yaxes(title_text="Price", row=1, col=1, showticklabels=True)
     fig.update_layout(legend=dict(orientation="h", y=1.06))
     return fig
 
