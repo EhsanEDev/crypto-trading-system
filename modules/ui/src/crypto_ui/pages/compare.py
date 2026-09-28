@@ -29,8 +29,8 @@ def build_strips_figure(
         go.Candlestick(
             x=frame.index, open=frame["open"], high=frame["high"],
             low=frame["low"], close=frame["close"], name="OHLC",
-            increasing_line_color="#7c8494", decreasing_line_color="#7c8494",
-            increasing_fillcolor="#4a5060", decreasing_fillcolor="#2a2e38",
+            increasing_line_color="#e8edf7", increasing_fillcolor="#c9d2e4",
+            decreasing_line_color="#aab2c2", decreasing_fillcolor="#5c6373",
         ),
         row=1, col=1,
     )
