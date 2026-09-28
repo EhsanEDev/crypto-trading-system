@@ -5,12 +5,21 @@ per module. Phase 1 ships the **Regimes Explorer** — candlestick charts
 with regime shading and live threshold calibration against the research
 module's pure detector.
 
+## Run
+
 ```bash
-# run the whole app (single executable):
-python -m crypto_ui        # or: crypto-ui   → http://localhost:8501
-# tests:
-pytest    # from modules/ui
+# from the repository root or modules/ui — works from any directory:
+modules/ui/run.sh              # activates the project venv automatically
+modules/ui/run.sh --port 8505  # custom port
+# equivalents:
+python modules/ui/run.py
+python -m crypto_ui            # with the venv activated
+crypto-ui                      # console script
 ```
+
+The app boots at http://localhost:8501 (dark theme, telemetry off, browser
+opens automatically). If Streamlit is missing from the current
+interpreter, `run.py` re-executes itself with the project `.venv`.
 
 ## Architecture — swappable by design
 
