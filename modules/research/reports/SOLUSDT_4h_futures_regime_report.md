@@ -7,8 +7,8 @@ Regime Detector v001 (rule-based hypothesis, no lookahead).
 - Symbol: `SOLUSDT`
 - Timeframe: `4h`
 - Start: `2022-04-17 16:00:00+00:00`
-- End: `2026-09-24 00:00:00+00:00`
-- Rows: **9723**
+- End: `2026-09-28 12:00:00+00:00`
+- Rows: **9750**
 - Missing candles (gaps): **0**
 - Duplicate candles: **0**
 - OHLC anomalies (exchange-reported inconsistencies): **77**
@@ -22,21 +22,21 @@ Regime Detector v001 (rule-based hypothesis, no lookahead).
 ## Provenance & freshness
 
 - Exchange: `bitunix` | market: **`futures`**
-- Raw range: `2022-04-17 16:00:00+00:00` → `2026-09-24 00:00:00+00:00` (9723 candles)
-- Raw content hash: `9af7638a057f843e…`
+- Raw range: `2022-04-17 16:00:00+00:00` → `2026-09-28 12:00:00+00:00` (9750 candles)
+- Raw content hash: `660d7c1ad587dc9d…`
 - Regime config fingerprint: `c2f45dc0350e`
-- Generated at: `2026-09-24T07:54:19.084446+00:00` (code v0.1.0, schema v1.0)
+- Generated at: `2026-09-28T16:05:50.186631+00:00` (code v0.1.0, schema v1.0)
 - Artifact freshness: **fresh**
 
 ## Indicator summary
 
 | Indicator | Defined | NaN (warm-up) | Mean | Min | Max |
 | --- | --- | --- | --- | --- | --- |
-| EMA50 | 9674 | 49 | 100.6412 | 10.3378 | 247.7356 |
-| EMA200 | 9524 | 199 | 100.8733 | 12.5558 | 226.2890 |
-| ATR14 % | 9709 | 14 | 2.8514 | 0.7495 | 28.0172 |
-| RSI14 | 9709 | 14 | 50.0568 | 12.2439 | 91.5406 |
-| ADX14 | 9696 | 27 | 27.7664 | 8.0686 | 72.0489 |
+| EMA50 | 9701 | 49 | 100.6796 | 10.3378 | 247.7356 |
+| EMA200 | 9551 | 199 | 100.8822 | 12.5558 | 226.2890 |
+| ATR14 % | 9736 | 14 | 2.8488 | 0.7495 | 28.0172 |
+| RSI14 | 9736 | 14 | 50.0811 | 12.2439 | 91.5406 |
+| ADX14 | 9723 | 27 | 27.7703 | 8.0686 | 72.0489 |
 
 > Warm-up (TA-Lib-compatible conventions): EMA slow needs `ema_slow - 1` bars, ADX needs `2*period - 1` bars (first ADX at bar 27 for period 14), RSI/ATR need `period` bars. Early NaNs are expected and never filled.
 
@@ -44,11 +44,11 @@ Regime Detector v001 (rule-based hypothesis, no lookahead).
 
 | Regime | Share | Candles |
 | --- | --- | --- |
-| TREND_UP |   18.2% | 1772 |
-| TREND_DOWN |   20.8% | 2023 |
+| TREND_UP |   18.5% | 1799 |
+| TREND_DOWN |   20.7% | 2023 |
 | RANGE |   26.2% | 2551 |
-| HIGH_VOLATILITY |   10.9% | 1055 |
-| UNCERTAIN |   23.9% | 2322 |
+| HIGH_VOLATILITY |   10.8% | 1055 |
+| UNCERTAIN |   23.8% | 2322 |
 
 ## Regime transitions
 
@@ -76,7 +76,7 @@ Regime Detector v001 (rule-based hypothesis, no lookahead).
 
 | Regime | Median | Mean | Max |
 | --- | --- | --- | --- |
-| TREND_UP | 7 | 15.0 | 69 |
+| TREND_UP | 7 | 15.2 | 69 |
 | TREND_DOWN | 8 | 15.8 | 78 |
 | RANGE | 12 | 17.0 | 87 |
 | HIGH_VOLATILITY | 4 | 9.3 | 58 |

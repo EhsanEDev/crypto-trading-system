@@ -1,0 +1,110 @@
+{
+  "strategy": {
+    "name": "trend_pullback_momentum",
+    "version": "v001",
+    "market": "futures",
+    "symbol": "ETHUSDT",
+    "timeframes": {
+      "regime": "4h",
+      "entry": "1h"
+    }
+  },
+  "range": {
+    "start": null,
+    "end": null
+  },
+  "config": {
+    "strategy_name": "trend_pullback_momentum",
+    "strategy_version": "v001",
+    "assets": [
+      "BTCUSDT",
+      "ETHUSDT",
+      "SOLUSDT"
+    ],
+    "regime_timeframe": "4h",
+    "entry_timeframe": "1h",
+    "market": "futures",
+    "rsi_recovery_threshold": 50.0,
+    "require_close_above_ema20": true,
+    "ema20_period": 20,
+    "rsi_period": 14,
+    "atr_period": 14,
+    "volatility": {
+      "enabled": true,
+      "percentile": 90.0,
+      "lookback": 200
+    },
+    "risk": {
+      "risk_per_trade": 0.005,
+      "atr_stop_multiplier": 1.5,
+      "reward_ratio": 2.0
+    },
+    "portfolio": {
+      "max_open_positions": 3,
+      "max_total_exposure": 1.0,
+      "one_position_per_symbol": true
+    },
+    "execution": {
+      "fee_rate": 0.0006,
+      "slippage_bps": 5.0
+    },
+    "exits": {
+      "regime_exit": true,
+      "ema_exit": false
+    },
+    "backtest": {
+      "initial_equity": 10000.0
+    },
+    "research_data_dir": "/home/ehsan/Projects/crypto-strategy-lab/modules/research/data"
+  },
+  "metrics": {
+    "samples": 39000,
+    "total_return": -0.23073600605105238,
+    "cagr": -0.05721908287491606,
+    "max_drawdown": 0.2585565625079588,
+    "sharpe": -1.0953191800904674,
+    "sortino": -0.4409271560741914,
+    "start_equity": 10000.0,
+    "end_equity": 7692.639939489476,
+    "annualization_periods_per_year": 8760.0,
+    "exposure": 0.026699183717132893,
+    "trade_count": 269,
+    "win_rate": 0.3308550185873606,
+    "profit_factor": 0.7156400749724529,
+    "expectancy": -8.57754669334767,
+    "average_win": 65.2456595630088,
+    "average_loss": -45.07902089787948,
+    "largest_win": 96.26397416256674,
+    "largest_loss": -58.00141403401156,
+    "max_losing_streak": 12,
+    "average_r": -0.19050922651477942,
+    "total_fees": 1071.7195591878658,
+    "total_slippage": 893.0995470213163,
+    "gross_pnl": -1235.640501322658,
+    "net_pnl": -2307.360060510524
+  },
+  "benchmark": {
+    "samples": 39000,
+    "total_return": -0.12458738355402343,
+    "cagr": -0.02944510085665142,
+    "max_drawdown": 0.7146104381709842,
+    "sharpe": 0.28604639439522195,
+    "sortino": 0.35933953760408166,
+    "start_equity": 9942.503672152907,
+    "end_equity": 8703.793153663106,
+    "annualization_periods_per_year": 8760.0,
+    "total_fees": 5.999999999999999,
+    "total_slippage": 4.997501249375313
+  },
+  "warnings": [],
+  "assumptions": [
+    "Signals are evaluated at candle close; entries/exits execute at the NEXT candle open.",
+    "Long entry fills at next_open * (1 + slippage); exits fill at the trigger level * (1 - slippage).",
+    "If a candle gaps through a stop, the fill happens at the candle open (worse than the stop level).",
+    "If a candle touches BOTH stop and take-profit, the stop is assumed to trigger first (conservative).",
+    "A pending order is never cancelled in v001; it fills at the next available candle open.",
+    "Positions opened at a candle open can be stopped out within that same candle.",
+    "End of data closes open positions at the final close (END_OF_DATA).",
+    "Data gaps are not forward-filled; the next available candle is used (gap count reported)."
+  ]
+}

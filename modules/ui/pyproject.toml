@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto-ui"
+version = "0.1.0"
+description = "Lab UI: interactive shell for the crypto-trading-system modules"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Ehsan" }]
+dependencies = [
+    "crypto-research",
+    "pandas>=2.2",
+    "numpy>=1.26",
+    "PyYAML>=6.0",
+    "streamlit>=1.37",
+    "plotly>=5.20",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+crypto-ui = "crypto_ui.launcher:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
