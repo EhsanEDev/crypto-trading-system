@@ -86,28 +86,43 @@ def _hover_customdata(frame: pd.DataFrame) -> list[list]:
 
 
 def _add_regime_bands(fig: go.Figure, frame: pd.DataFrame) -> None:
-    """One shaded band per contiguous regime run."""
+    """One shaded band per contiguous regime run.
+
+    Bulk-applied: shapes and strip segments are collected first and added
+    in single calls (per-shape add_vrect re-serializes the whole figure
+    and is O(n) per call — minutes slow for 2000 candles).
+    """
     regimes = frame["regime"].tolist()
     index = frame.index
+    bands: list[dict] = []
+    strip: dict[str, list] = {}
     start = 0
     for i in range(1, len(regimes) + 1):
         if i == len(regimes) or regimes[i] != regimes[start]:
             label = regimes[start]
-            color = REGIME_COLORS.get(label, "rgba(140,140,150,0.1)")
-            fig.add_vrect(
-                x0=index[start], x1=index[i - 1],
-                fillcolor=color, line_width=0, layer="below",
-            )
-            # regime strip under the price panel
-            fig.add_trace(
-                go.Scatter(
-                    x=[index[start], index[i - 1]], y=[1, 1],
-                    mode="lines", line=dict(width=6, color=REGIME_EDGE_COLORS.get(label, "#8c8c96")),
-                    name=label, showlegend=False, hoverinfo="skip",
-                ),
-                row=4, col=1,
-            )
+            bands.append({
+                "type": "rect", "xref": "x", "yref": "paper",
+                "x0": index[start], "x1": index[i - 1], "y0": 0.0, "y1": 1.0,
+                "fillcolor": REGIME_COLORS.get(label, "rgba(140,140,150,0.1)"),
+                "line": {"width": 0}, "layer": "below",
+            })
+            color = REGIME_EDGE_COLORS.get(label, "#8c8c96")
+            segment = strip.setdefault(color, [[], []])
+            segment[0] += [index[start], index[i - 1], None]
+            segment[1] += [1.0, 1.0, None]
             start = i
+    if bands:
+        fig.update_layout(shapes=bands)
+    for color, (xs, ys) in strip.items():
+        fig.add_trace(
+            go.Scatter(
+                x=xs, y=ys, mode="lines",
+                line=dict(width=6, color=color),
+                name="Regime strip", showlegend=False, hoverinfo="skip",
+                connectgaps=False,
+            ),
+            row=4, col=1,
+        )
 
 
 def distribution_html(distribution: dict[str, float]) -> str:

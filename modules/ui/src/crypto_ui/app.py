@@ -122,7 +122,7 @@ with tab_regimes:
     from crypto_ui.pages import regimes as regimes_page
 
     fig = regimes_page.build_figure(frame, timeframe="4h")
-    st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False})
+    st.plotly_chart(fig, width="stretch", config={"displaylogo": False})
 
     st.markdown(
         f"**Distribution (this window)** · "
