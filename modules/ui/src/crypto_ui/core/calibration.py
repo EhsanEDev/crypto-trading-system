@@ -71,13 +71,18 @@ def diff_labels(baseline: pd.Series, candidate: pd.Series) -> dict[str, Any]:
     assert_index_equal(baseline.index, candidate.index)
     changed = baseline != candidate
     total = len(baseline)
-    per_regime_changes = candidate[changed].value_counts().to_dict()
+    pairs: dict[str, int] = {}
+    for base_label, cand_label in zip(baseline[changed], candidate[changed]):
+        key = f"{base_label} -> {cand_label}"
+        pairs[key] = pairs.get(key, 0) + 1
     from_regime = baseline[changed].value_counts().to_dict()
+    to_regime = candidate[changed].value_counts().to_dict()
     return {
         "changed_candles": int(changed.sum()),
         "changed_pct": float(changed.sum() / total * 100) if total else 0.0,
-        "transitions_into": per_regime_changes,
+        "pairs": dict(sorted(pairs.items(), key=lambda kv: -kv[1])),
         "transitions_out_of": from_regime,
+        "transitions_into": to_regime,
         "baseline_distribution": regime_distribution(pd.DataFrame({"regime": baseline})),
         "candidate_distribution": regime_distribution(pd.DataFrame({"regime": candidate})),
     }

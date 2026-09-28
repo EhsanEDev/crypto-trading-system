@@ -6,11 +6,13 @@ this file + pages/, while core/ stays intact.
 
 from __future__ import annotations
 
+import json as _json
+
 import pandas as pd
 import streamlit as st
 
 from crypto_ui.core import dataset
-from crypto_ui.core.calibration import recompute_regimes, regime_distribution
+from crypto_ui.core.calibration import diff_labels, recompute_regimes, regime_distribution
 from crypto_ui.core.presets import PresetStore
 from crypto_ui.theme import register_theme
 
@@ -71,10 +73,35 @@ with st.sidebar:
 tab_regimes, tab_compare, tab_presets = st.tabs(
     ["📊 Regimes", "🔍 Compare", "💾 Presets"]
 )
-with tab_compare:
-    st.info("Phase 2 — baseline vs candidate comparison comes here.")
 with tab_presets:
     st.info("Phase 3 — saved calibration presets come here.")
+
+# --------------------------------------------------------------------- #
+# shared computation (one recalibration per run, reused by both tabs)
+# --------------------------------------------------------------------- #
+
+raw_frame = _load_symbol(symbol, market)
+ohlcv = raw_frame[["open", "high", "low", "close", "volume"]]
+
+
+
+@st.cache_data(show_spinner="Recalibrating…")
+def _calibrate(_ohlcv: pd.DataFrame, overrides_json: str) -> pd.DataFrame:
+    """Candidate frame cached on the override set (baseline cached too)."""
+    return _recalibrate(_ohlcv, dict(_json.loads(overrides_json))).frame
+
+
+overrides_json = _json.dumps(overrides, sort_keys=True)
+baseline_frame = _calibrate(ohlcv, "{}")
+candidate_frame = _calibrate(ohlcv, overrides_json)
+window = st.slider(
+    "Window (trailing candles)", min_value=300, max_value=len(raw_frame),
+    value=min(2000, len(raw_frame)), step=100,
+    help="Displayed trailing window (calibration always uses full history)",
+)
+
+
+diff = diff_labels(baseline_frame["regime"], candidate_frame["regime"])
 
 # --------------------------------------------------------------------- #
 # Regimes tab
@@ -83,13 +110,6 @@ with tab_presets:
 with tab_regimes:
     st.markdown("Regime labels over candles — recalibrate thresholds live.")
 
-    raw_frame = _load_symbol(symbol, market)
-    ohlcv = raw_frame[["open", "high", "low", "close", "volume"]]
-    window = st.slider(
-        "Window (trailing candles)", min_value=300, max_value=len(raw_frame),
-        value=min(2000, len(raw_frame)), step=100,
-    )
-
     col1, col2 = st.columns([2, 3])
     col1.metric("Candles (total)", f"{len(raw_frame):,}")
     col2.metric(
@@ -97,8 +117,7 @@ with tab_regimes:
         f"{raw_frame.index.min():%Y-%m-%d} → {raw_frame.index.max():%Y-%m-%d}",
     )
 
-    calibrated = _recalibrate(ohlcv, overrides)
-    frame = _tail(calibrated.frame, window)
+    frame = _tail(candidate_frame, window)
 
     from crypto_ui.pages import regimes as regimes_page
 
@@ -106,21 +125,23 @@ with tab_regimes:
     st.plotly_chart(fig, use_container_width=True, config={"displaylogo": False})
 
     st.markdown(
-        f"**Distribution (this window)** · {regimes_page.distribution_html(regime_distribution(frame))}",
+        f"**Distribution (this window)** · "
+        f"{regimes_page.distribution_html(regime_distribution(frame))}",
         unsafe_allow_html=True,
     )
     st.caption(
-        f"Overrides: {calibrated.overrides or 'none (baseline)'} — labels come from the "
+        f"Overrides: {overrides or 'none (baseline)'} — labels come from the "
         f"same pure detector the CLI uses (no lookahead)."
     )
 
     st.divider()
     st.subheader("Save as preset")
     pcol1, pcol2 = st.columns([3, 1])
-    preset_name = pcol1.text_input("Preset name", placeholder="e.g. looser_adx_25", label_visibility="collapsed")
+    preset_name = pcol1.text_input("Preset name", placeholder="e.g. looser_adx_25",
+                                   label_visibility="collapsed")
     if pcol2.button("💾 Save preset", disabled=not preset_name, use_container_width=True):
         try:
-            path = PresetStore().save(preset_name, dict(calibrated.overrides), note=f"{symbol} {market}")
+            path = PresetStore().save(preset_name, dict(overrides), note=f"{symbol} {market}")
             st.success(f"Saved → {path}")
         except Exception as exc:
             st.error(str(exc))
